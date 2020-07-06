@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+
+		</style>
+	</head>
+	<body>
+		<div id='app'>
+			<p>{{username}}</p>
+			
+			<h4>单行文本输入框</h4>
+			<input type="text" name="username" v-model="username" value="" />
+						
+			<h4>多行文本输入框</h4>
+			<textarea rows="" cols="" v-model="username"></textarea>
+			<hr>
+			
+			<h4>复选框：选择你喜欢的水果</h4>
+			<span  v-for="item in fruits">
+				{{item}}
+				<input type="checkbox"  v-model="checkFruits" name="cFruits" :value="item"/>
+			</span>
+			<p>{{checkFruits}}</p>
+			<hr>
+			
+			<h4>单选框：选择你喜欢的水果</h4>
+			<span  v-for="item in fruits">
+				{{item}}
+				<input type="radio" v-model="radioFruits" name="rFruits" :value="item"/>
+			</span>
+			<p>{{radioFruits}}</p>
+			<hr>
+			
+			<h4>单项选择框：选择你居住的城市</h4>
+			<select name="" v-model="chooseCity">
+				<!-- 
+					如果 v-model 表达式的初始值未能匹配任何选项，
+					<select> 元素将被渲染为“未选中”状态。
+					在 iOS 中，这会使用户无法选择第一个选项。
+					因为这样的情况下，iOS 不会触发 change 事件。
+					因此，更推荐像上面这样提供一个值为空的禁用选项。 
+				-->
+				<option disabled value="">请选择</option>
+				<option v-for="item,key in citys" :value="item" >{{item}}</option>
+			</select>
+			<p>{{chooseCity}}</p>
+			<hr>
+			
+			<h4>多项选择框：选择你喜欢的城市</h4>
+			<select name="" v-model="moreCitys" multiple="multiple">
+				<option v-for="item,key in citys" :value="item" >{{item}}</option>
+			</select>
+			<p>{{moreCitys}}</p>
+			<hr>
+			
+			<h4>.number: 将字符串转变为数字获取</h4>
+			<input type="text" name="age" v-model.number="age" value="" />
+			<hr>
+			
+			<h4>.lazy: 在 change 事件_之后_进行同步 </h4>
+			<!-- 在“change”时而非“input”时更新 -->
+			<input type="text" name="school" v-model.lazy="school" value="" />
+			<hr>
+			
+			<h4>.trim: 自动过滤用户输入的首尾空白字符 </h4>
+			<input type="text" name="msg" v-model.trim="msg" value="" >
+		</div>
+		
+		<script type="text/javascript">
+			let app = new Vue({
+				el:'#app',
+				data:{
+					username: 'mingW',
+					fruits:['苹果','香蕉','橙子','西瓜'],
+					checkFruits: [],
+					radioFruits: '',
+					citys:['北京','上海','广州','深圳'],
+					chooseCity:'北京',
+					moreCitys:[],
+					age: 16,
+					school: 'hah',
+					msg: 'FWGRs'
+					
+				},
+				//监听
+				watch:{
+					age:function(val){
+						console.log(val)
+					},
+					school:function(val){
+						console.log(val)
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

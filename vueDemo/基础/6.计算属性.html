@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id='app'>
+			<!-- 一般情况下写法 -->
+			<h1>{{first+last}}</h1>
+			
+			<!-- 计算属性 -->
+			<h1>{{fullname}}</h1>
+			
+			<!-- 逆序显示一个单词 -->
+			<h1>{{word.split('').reverse().join('')}}</h1>
+			<h1>{{reverseWord}}</h1>
+			
+			<ul>
+				<li v-for='item,index in addStudents'>
+					<h4>索引值{{index}}:{{item.name}}:{{item.age}}</h4>
+				</li>
+			</ul>
+		</div>
+		
+		<script type="text/javascript">
+			let app = new Vue({
+				el:'#app',
+				data:{
+					first:'zhang',
+					last:'san',
+					word:'music',
+					students:[
+						{
+							name:'小明',
+							age:16
+						},
+						{
+							name:'小黑',
+							age:17
+						},
+						{
+							name:'小红',
+							age:18
+						},
+						{
+							name:'小白',
+							age:19
+						}
+					]
+				},
+				computed:{
+					fullname:function(){
+						console.log(this)
+						//会将计算的结果进行缓存，只要this.first和this.last变量的内容不改变，就不会重新计算
+						return this.first + this.last
+					},
+					reverseWord:function(){
+						return this.word.split('').reverse().join('')
+					},
+					addStudents:function(){
+						let results = this.students.filter((item,index)=>{
+							return item.age%2==0
+						})
+						return results;
+					}
+				}
+			})
+		</script>
+		
+	</body>
+</html>

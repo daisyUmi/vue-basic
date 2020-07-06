@@ -1,0 +1,12 @@
+
+/* 
+  cd css
+  lessc style.less style.css 
+  将css文件夹下的style.less转成 style.css 
+*/
+.bgColor {
+  background: #61AFFE;
+}
+.button {
+  background: #61AFFE;
+}

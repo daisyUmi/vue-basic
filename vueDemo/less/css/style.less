@@ -1,0 +1,122 @@
+// npm install -g less
+
+@main-color:#61AFFE;
+@small-width: 10px;
+
+
+
+.bgColor{
+    background: @main-color;
+}
+
+.button{
+    background: @main-color;
+}
+
+.xk{
+    width: 100px;
+    height: 100px;
+    border: 1px solid #cccccc;
+}
+
+.box{
+    //使用less混合功能，仅需要在所需要的.class类中声明.+class类名
+    .xk;  
+    background: @main-color;
+}
+
+
+.lcButton(@bgcolor){
+    .xk;
+    background: @bgcolor;
+}
+.redLcButton{
+    .lcButton(@main-color);
+    text-align: center;
+    line-height: 100px;
+}
+
+
+//给一个默认颜色
+.xxButton(@bgcolor:#cccccc){
+    .xk;
+    background: @bgcolor;
+}
+.greyButton{
+    .xxButton()
+}
+.blueButton{
+    .xxButton(skyBlue)
+}
+
+
+.triangle(top, @width:5px, @color:#cccccc){
+    border-width: @width;
+    border-color: @color transparent transparent transparent;
+    border-style: solid dashed dashed dashed;
+}
+.triangle(right, @width:5px, @color:#cccccc){
+    border-width: @width;
+    border-color:  transparent  @color transparent transparent;
+    border-style:  dashed solid dashed dashed;
+}
+.triangle(bottom, @width:5px, @color:#cccccc){
+    border-width: @width;
+    border-color:  transparent transparent @color transparent;
+    border-style:  dashed  dashed solid dashed;
+}
+.triangle(left, @width:5px, @color:#cccccc){
+    border-width: @width;
+    border-color:  transparent transparent transparent @color;
+    border-style:  dashed  dashed  dashed solid;
+}
+.triangle(@_, @width:5px, @color:#cccccc){
+    //@_是固定格式，表示不管你匹配到谁，都会带上这些内容
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+.triangle-top{
+    .triangle(top)
+}
+
+
+//可以进行运算
+.small{
+    width: 2*@small-width;
+}
+
+
+//完成层级的嵌套
+.todo{
+    width: 100px;
+    height: 100px;
+    h1{
+        width: 10px;
+        height: 10px;
+    }
+    .item{
+        line-height: 10px;
+        height: 10px;
+        img{
+            width: 5px;
+            height: 5px;
+        }
+    }
+}
+
+
+// arguments
+.borderStyle(@width:10px, @style:solid, @color:skyblue){
+    border: @arguments;
+}
+.lcbox{
+    .borderStyle()
+}
+
+//避免编译符号~
+// 在字符串前加上一个即可使用一些less不认识的专有语法或一些不正确的css语法
+.bigbox{
+    .borderStyle(20px, dash);
+    content:~'@main-color';
+}

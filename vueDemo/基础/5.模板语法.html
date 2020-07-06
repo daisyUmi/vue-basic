@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<style type='text/css'>
+			#login{
+				background-color: antiquewhite;
+			}
+			#register{
+				background-color: aliceblue;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<div id='app'>
+			<h1>{{msg}}</h1>
+			<!-- 一次性插入，不再修改 -->
+			<h1 v-once>{{msg}}</h1>
+			
+			<h1>{{htmlTxt}}</h1> <!--插入HTML内容：你的站点上动态渲染的任意 HTML 可能会非常危险，因为它很容易导致 XSS 攻击。请只对可信内容使用 HTML 插值，绝不要对用户提供的内容使用插值。-->
+			<!-- 插入HTML内容 -->
+			<h1 v-html='htmlTxt'></h1>
+			
+			<!-- 修改属性内容 -->
+			<!-- 绑定动态属性 全写 -->
+			<div v-bind:id='idname'>
+				<h1>登陆</h1>
+			</div>
+			<!-- 绑定动态属性 缩写 -->
+			<div :id='idname'>
+				<h1>登陆</h1>
+			</div>
+			
+			<!-- 对于布尔 attribute (它们只要存在就意味着值为 true) -->
+			<button :disabled="isButtonDisabled">Button</button>
+			
+			<!-- 模板语言的表达式应用 -->
+			<div>
+				{{isVip ? firstName + lastName : '其他'}}
+			</div>
+			<!-- 事件绑定 -->
+			<button v-on:click='changeBg'>改变背景</button>
+			<button @click='changeBg'>改变背景</button>
+		</div>
+		
+		<script type="text/javascript">
+		let app = new Vue({
+			el:'#app',
+			data:{
+				isButtonDisabled: true,
+				msg:'hello vue',
+				htmlTxt:'<span>hello</span>',
+				idname: 'login',
+				isVip: true,
+				firstName: '张',
+				lastName: '三'
+			},
+			methods:{
+				changeBg:()=> {
+					document.body.style.background='skyblue'
+				}
+			}
+		})
+		</script>
+		
+	</body>
+</html>

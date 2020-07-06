@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+
+		</style>
+	</head>
+	<body>
+		<div id='app'>
+			<h1>点击次数：{{count}}</h1>
+			<!-- 可以使用表达式完成事件操作 -->
+			<button type="button" @click="count++">点击</button>
+			<!-- 获取事件对象 -->
+			<button type="button" @click="handleClick">点击2</button>
+			<hr>
+			
+			<!-- 事件传参 -->
+			<ul>
+				<li v-for="item,index in stars" @click="clickEvent(index, item,$event)">{{index}}:{{item}}</li>
+			</ul>
+			<hr>
+			<!-- 修饰符 -->
+			
+			<!-- stop修饰符：阻止冒泡事件向上传递 -->
+			<div class="btnParent" @click="clickParent">
+				<button type="button" @click.stop="clickChildren">按钮</button>
+			</div>
+			
+
+			<form action="" method="post">
+				<!-- @keydown.enter: 绑定输入框回车事件 -->
+				<input type="text" name="username"  v-model="city" id="" value="" @keydown.enter.f1="handleSubmit"/>
+				
+				<!-- prevent修饰符：阻止默认事件 -->
+				<input  @click.prevent="handleSubmit" type="submit" value="提交"/>
+			</form>
+			
+			<!-- once修饰符：只触发一次 -->
+			<button type="button" @click.once="onceEvent">只触发一次</button>
+			
+			<!-- .exact : 修饰符允许你控制由精确的系统修饰符组合触发的事件 -->
+			<button type="button" @click.ctrl.exact="ctrlEvent">按住ctrl事件</button>
+		</div>
+		<script type="text/javascript">
+			Vue.config.keyCodes.f1 = 112   //配置按键的自定义修饰符
+			let app = new Vue({
+				el:'#app',
+				data:{
+					count: 0,
+					stars:['菜','白','成'],
+					city:'广州'
+				},
+				methods:{
+					handleClick:function(e){
+						console.log('e:',e)
+						console.log('this:',this)
+						this.count++;
+					},
+					clickEvent:function(index, value, event){
+						console.log('index:',index)
+						console.log('value:',value)
+						console.log('事件对象event:',event)
+					},
+					
+					
+					clickChildren:function(event){
+						console.log('clickChildren:',event)
+					},
+					clickParent:function(event){
+						console.log('clickParent:',event)
+					},
+					handleSubmit: async function(event){
+						console.log('阻止提交', event)
+						console.log(this.city)
+						
+						let httpUrl='http://...'
+						let res = await fetch(httpUrl)
+						let result = await res.json()
+						
+						console.log(result)
+					},
+					onceEvent:function(event){
+						console.log('只触发一次', event)
+					},
+					ctrlEvent: function(event){
+						console.log(event)
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

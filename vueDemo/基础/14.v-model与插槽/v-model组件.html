@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id='app'>
+			<input type="text" v-model='username' value="" />
+			<!-- v-model='username'等同于@input="username=$event.target.value" :value="username" -->
+			<input type="text"  @input="username=$event.target.value" :value="username" name="" id=""  />
+				
+			<h3>{{username}}</h3>
+			<hr>
+			
+			
+			第一版
+			<input-com :username='username' @child-input='changeEvent'></input-com><br/>
+			
+			第二版
+			<input-com :username='username' @child-input='username=$event'></input-com><br/>
+			
+			第三版
+			<input-com-2 :username='username' @input='username=$event'></input-com-2><br/>
+			
+			最终版
+			<input-com-2 v-model='username'></input-com-2>
+			
+			<h3>{{username}}</h3>
+		</div>
+
+		<script type="text/javascript">
+			Vue.component('input-com',{
+				props:['username'],
+				template:`<input type="text" :value="username" @input="$emit('child-input',$event.target.value)"/>`
+			})
+			
+			Vue.component('input-com-2',{
+				//最终版：<input type="text" :value="username" @input="$emit('input',$event.target.value)"/>
+				props:['username'],
+				template:`<input type="text" :value="username" @input="$emit('input',$event.target.value)"/>`
+			})
+			
+			
+			//根组件
+			let app = new Vue({
+				el: '#app',
+				data: {
+					username:''
+				},
+				methods:{
+					changeEvent:function(data){
+						this.username = data
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

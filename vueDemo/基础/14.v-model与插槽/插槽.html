@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<alert-com :html='content'></alert-com>
+			<hr>
+			
+			<alert-com1>
+				<!-- content值来自父组件 -->
+				<!-- slot里面的内容只能父元素有关 -->
+				<p>小心，{{content}}</p>
+			</alert-com1>
+		</div>
+
+		<script type="text/javascript">
+			Vue.component('alert-com',{
+				props:['html'],
+				template:`
+					<div class="alert">
+						<h4>温馨提示</h4>
+						<div class="content">
+							{{html}}
+						</div>
+					</div>
+				`,
+				data:function(){
+					return{
+						childcontent: 'abc'
+					}
+				}
+			})
+
+			Vue.component('alert-com1',{
+				props:['html'],
+				<!-- 插槽的应用:<slot></slot> -->
+				template:`
+					<div class="alert">
+						<h4>温馨提示</h4>
+						<div class="content">
+							<slot></slot>
+						</div>
+					</div>
+				`
+			})
+			
+			let app = new Vue({
+				el: '#app',
+				data: {
+					content:'xiaoxin'
+				}
+			})
+		</script>
+	</body>
+</html>

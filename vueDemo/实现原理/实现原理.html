@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<input type="text" v-model='msg' name='' id='' value='' />
+			<h2>{{msg}}</h2>
+			<h2 v-html="msg"></h2>
+			<button type="button" @click="changeEvent">修改msg</button>
+		</div>
+
+		<script type="text/javascript">
+			class Vue {
+				constructor(options) {
+					//通过选择器获取根对象
+					this.$el = document.querySelector(options.el);
+					
+					// 数据创造之前
+					if(typeof options.beforeCreate == 'function'){
+						options.beforeCreate.bind(this)()
+					}
+					
+					this.$options = options
+
+					//this.$watchEvent[key] = [event,event,...]
+					//设置一个对象专门保存修改更新的事件
+					this.$watchEvent = {}
+
+					//代理options的data数据
+					this.proxyData()
+
+					//劫持（订阅）设置事件调用
+					this.observe()
+
+					// 数据创造之后
+					if(typeof options.created == 'function'){
+						options.created.bind(this)()
+					}
+					
+					// 挂载前
+					if(typeof options.beforeMount == 'function'){
+						options.beforeMount.bind(this)()
+					}
+					
+					//把视图的数据和事件进行绑定
+					this.compile(this.$el.childNodes)
+					
+					// 挂载后
+					if(typeof options.mounted == 'function'){
+						options.mounted.bind(this)()
+					}
+				}
+				proxyData() {
+					//循环通过set,get方法来实现代理数据
+					for (let key in this.$options.data) {
+						//给this添加一个key值
+						Object.defineProperty(this, key, {
+							configurable: false, //不可再配置
+							enumerable: true, //是否可循环
+							// value:'' ,//定义值
+							// writable:false, //是否可修改
+
+							get() {
+								//获取this[key]时，即返回options的data
+								return this.$options.data[key]
+							},
+							set(val) {
+								this.$options.data[key] = val
+							}
+						})
+					}
+				}
+				observe() {
+					//劫持（订阅）事件
+					for (let key in this.$options.data) {
+						//获取此处的值保存到变量中
+						let value = this.$options.data[key]
+						let that = this
+						//给this.$options.data添加一个key值
+						Object.defineProperty(this.$options.data, key, {
+							configurable: false, //不可再配置
+							enumerable: true, //是否可循环
+							// value:'' ,//定义值
+							// writable:false, //是否可修改
+
+							get() {
+								//获取this[key]时，即返回options的data
+								return value;
+							},
+							set(val) {
+								// console.log('触发设置事件')
+								//触发以这个key值的更新事件
+								value = val;
+								if (that.$watchEvent[key]) {
+									// console.log('that.$watchEvent[key]', that.$watchEvent[key])
+									that.$watchEvent[key].forEach((item, index) => {
+										item.update()
+									})
+								}
+							}
+						})
+					}
+				}
+				compile(cNode) {
+					cNode.forEach((node, index) => {
+						if (node.nodeType == 1) {
+							//<h2 v-html="msg"></h2> 修改v-html中的值，同步更新修改
+							//元素类型
+							if (node.hasAttributes('v-html')) {
+								let vmKey = node.getAttribute('v-html');
+								// vmKey = vmKey.trim()  //去空格
+								if (this.hasOwnProperty(vmKey)) {
+									node.innerHTML = this[vmKey]
+									let watcher = new Watch(this, vmKey, node, 'innerHTML', node.nodeType)
+									if (this.$watchEvent[vmKey]) {
+										this.$watchEvent[vmKey].push(watcher)
+									} else {
+										this.$watchEvent[vmKey] = []
+										this.$watchEvent[vmKey].push(watcher)
+									}
+									//删除节点事件
+									node.removeAttribute('v-html');
+								}
+							}
+							//判断是否有v-model属性
+							//<input type="text" v-model='msg' name='' id='' value='' /> 输入值，同步更新修改
+							if (node.hasAttributes('v-model')) {
+								let vmKey = node.getAttribute('v-model');
+								// vmKey = vmKey.trim()  //去空格
+								if (this.hasOwnProperty(vmKey)) {
+									node.value = this[vmKey];
+									let watcher = new Watch(this, vmKey, node, 'value', node.nodeType)
+									if (this.$watchEvent[vmKey]) {
+										this.$watchEvent[vmKey].push(watcher)
+									} else {
+										this.$watchEvent[vmKey] = []
+										this.$watchEvent[vmKey].push(watcher)
+									}
+								}
+								node.addEventListener('input', (event) => {
+									this[vmKey] = node.value;
+								})
+								//删除属性
+								node.removeAttribute('v-model');
+							}
+
+							//判断是否有绑定@click属性
+							if (node.hasAttributes('@click')) {
+								let vmKey = node.getAttribute('@click');
+								if (vmKey!==null) {
+									node.addEventListener('click', (event) => {
+										this.eventFn = this.$options.methods[vmKey].bind(this)
+									})
+								}
+							}
+							
+							if(node.childNodes.length>0){
+								this.compile(node.childNodes)
+							}
+						}
+						if (node.nodeType == 3) {
+							//文本类型
+							let reg = /\{\{(.*?)\}\}/g;
+							let text = node.textContent;
+							node.textContent = text.replace(reg,(match,vmKey)=>{
+								// console.log('match',match)
+								// console.log('match...,vmKey',vmKey)
+								//去除空格
+								vmKey = vmKey.trim();
+								if (this.hasOwnProperty(vmKey)) {
+									node.value = this[vmKey];
+									let watcher = new Watch(this, vmKey, node, 'textContent', node.nodeType)
+									if (this.$watchEvent[vmKey]) {
+										this.$watchEvent[vmKey].push(watcher)
+									} else {
+										this.$watchEvent[vmKey] = []
+										this.$watchEvent[vmKey].push(watcher)
+									}
+								}
+								return this[vmKey];
+							})
+						}
+					})
+
+				}
+			}
+
+			class Watch {
+				constructor(vm, key, node, attr, nType) {
+					//vm:即实例化的app对象
+					this.vm = vm;
+					//key:即绑定的vm触发的属性
+					this.key = key;
+					//node:即此vm[key]数据绑定的HTML节点
+					this.node = node;
+					//prototype:即vm数据所绑定的HTML的属性名称，比如说：<h2 v-html="msg"></h2>中v-html绑定的是h2对象上的innerHtml的值
+					this.attr = attr;
+				}
+				update() {
+					// 更新之前
+					if(typeof options.beforeUpdate == 'function'){
+						options.beforeUpdate.bind(this)()
+					}
+					this.node[this.attr] = this.vm[this.key]
+					
+					// 更新之后
+					if(typeof options.updated == 'function'){
+						options.updated.bind(this)()
+					}
+				}
+			}
+
+			let options = {
+				el: '#app',
+				data: {
+					msg: 'hello laochen',
+					username: 'ming'
+				},
+				methods: {
+					changeEvent: function() {
+						this.msg = 'hello'
+					}
+				},
+				beforeMount(){
+					console.log('挂载前')
+				},
+				mounted(){
+					console.log('挂载后')
+				}
+			}
+			let app = new Vue(options)
+			// app.msg === options.data.msg  //app.msg等同于options.data.msg
+			//app.msg = 'abc'  //等同于options.data.msg = 'abc'
+			// console.log(app)
+		</script>
+	</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id='app'>
+			{{content}}
+			<br/>
+			<span v-bind:title="message">
+				鼠标悬停几秒钟查看此处动态绑定的提示信息！
+			</span><br/>
+		</div>
+		
+		<script type="text/javascript">
+			let app = new Vue({
+				el:'#app',
+				data:{
+					// 声明式渲染
+					content: 'hello Vue',
+					message: '页面加载于'+new Date().toLocaleString(),
+				},
+				tabChange: (e)=>{
+					console.log(e)
+					let tabId = e.target.dataset.id
+					this.tab = tabId  //this等同于app
+				}
+			})
+		</script>
+		
+	</body>
+</html>

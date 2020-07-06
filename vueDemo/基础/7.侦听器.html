@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id='app'>
+			<h1>{{msg}}</h1>
+			<h1>{{reverseMsg}}</h1>
+			<ul>
+				<li v-for="item in arr">{{item}}</li>
+			</ul>
+		</div>
+		
+		<script type="text/javascript">
+			let app = new Vue({
+				el:'#app',
+				data:{
+					msg:"hello Vue",
+					arr:['小明','小红', '小黑']
+				},
+				computed:{
+					reverseMsg:{
+						get:function(){
+							//设置修改了reverseMsg的值
+							return this.msg.split('').reverse().join('')
+						},
+						
+						set:function(value){
+							console.log('value:',value)
+							//修改了msg的值（只是可以设置，但尽量少用）
+							this.msg = value.split('').reverse().join('')
+						}
+					}
+				},
+				watch:{
+					msg:(val)=>{
+						console.log('监听事件---msg',val)
+					},
+					arr:(val)=>{
+						console.log('监听事件---arr',val)
+					}
+				}
+			})
+		</script>
+		<!-- 不要滥用watch -->
+	</body>
+</html>

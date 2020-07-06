@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<style type='text/css'>
+			#pane{
+				width:200px;
+				height: 200px;
+				background:skyblue;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='app'>
+			<h3>明星列表</h3>
+			<ul>
+				<li v-for='item in stars'>{{item}}</li>
+			</ul>
+			<hr>
+			
+			<h3>学生列表</h3>
+			<ul>
+				<li v-for='item in students'>
+					<h4>{{item.name}}:{{item.age}}</h4>
+				</li>
+			</ul>
+			<hr>
+			
+			<h3>学生列表(带索引)</h3>
+			<ul>
+				<li v-for='item,key in students'>
+					<h4>索引值{{key}}:{{item.name}}:{{item.age}}</h4>
+				</li>
+			</ul>
+			<hr>
+			
+			<h3>循环对象</h3>
+			<ul>
+				<li v-for='item,key,index in students[0]'>
+					<h4>{{key}}:{{index}}:{{item}}</h4>
+				</li>
+			</ul>
+			<hr>
+			
+			<h3>条件+渲染（将偶数年龄的学生渲染出来</h3>
+			<ol>
+				<li v-for='item,index in students' v-if='item.age%2==0' :key='index'>
+					<h4>索引值{{index}}:{{item.name}}:{{item.age}}</h4>
+				</li>
+			</ol>
+			<hr>
+		</div>
+		
+		<script type="text/javascript">
+			let app = new Vue({
+				el:'#app',
+				data:{
+					// 列表渲染
+					stars:['白敬亭','贾富贵','菜菜'],
+					students:[
+						{
+							name:'小明',
+							age:16
+						},
+						{
+							name:'小黑',
+							age:17
+						},
+						{
+							name:'小红',
+							age:18
+						},
+						{
+							name:'小白',
+							age:19
+						}
+					]
+				}
+			})
+		</script>
+		
+	</body>
+</html>

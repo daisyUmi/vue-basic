@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<style type='text/css'>
+			#pane{
+				width:200px;
+				height: 200px;
+				background:skyblue;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<div id='app'>
+			<span v-if="isView"> 现在你看见我了!</span>
+			<span v-else> v-else</span>
+			<br/>
+			<hr>
+			
+			<span>用户登录时间</span>
+			<span v-if='age>18'>允许24小时登录</span>
+			<span v-else-if='age>14'>允许8小时登录</span>
+			<span v-else>允许4小时登录</span>
+			<br/>
+			<hr>
+			<div v-show='isShow' id='pane'>
+				Hello Vue
+			</div>
+			<button @click='showPane'>切换显示内容</button>
+			<br/>
+			<hr>
+
+			<span v-show="tab==1">首页</span>
+			<span v-show="tab==2">新闻页</span>
+			<span v-show>个人中心</span>
+			
+			<button @click='tabChange' data-id='1'>首页</button>
+			<button @click='tabChange' data-id='2'>新闻</button>
+			<button @click='tabChange' data-id='3'>个人</button>
+		</div>
+		
+		<script type="text/javascript">
+			let app = new Vue({
+				el:'#app',
+				data:{
+					isView: true,
+					age: 14,
+					isShow: true,
+					//tab切换
+					tab: 1
+				},
+				// 方法
+				methods:{
+					showPane: (e)=>{
+						console.log(e)
+						app.isShow = !app.isShow
+					},
+					tabChange: function(e){
+						console.log(e)
+						let tabId = e.target.dataset.id
+						this.tab = tabId  //this等同于app
+					}
+				}
+			})
+			//注意v-if和v-else中间不能有其他元素
+			
+			// v-if和v-show的区别：
+			// v-if:(只是渲染一次的内容用v-if)不显示时,第一次就直接不渲染,如果内容已经显示将其改为不显示,将内容直接从DOM去除
+			// v-show: (反复需要切换的内容,使用v-show)不显示时,就会改为display:none,但是会渲染到DOM上
+
+		</script>
+		
+	</body>
+</html>

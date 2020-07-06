@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<!-- <link href="../../css/animate.min.css" rel="stylesheet" type="text/css" /> -->
+		<link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css" />
+		<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+		.content{
+			width: 200px;
+			height: 200px;
+			background-color: #87CEEB;
+		}
+		/* 淡入淡出 */
+		.fade-enter-active, .fade-leave-active {
+		  transition: opacity .5s;
+		}
+		.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+		  opacity: 0;
+		}
+		
+		/* 滑动 */
+		/* 可以设置不同的进入和离开动画 */
+		/* 设置持续时间和动画函数 */
+		.slide-fade-enter-active {
+		  transition: all .3s ease;
+		}
+		.slide-fade-leave-active {
+		  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+		}
+		.slide-fade-enter, .slide-fade-leave-to
+		/* .slide-fade-leave-active for below version 2.1.8 */ {
+		  transform: translateX(10px);
+		  opacity: 0;
+		}
+		</style>
+	</head>
+	<body>
+		<div id='app'>
+		
+			  <button @click="toggleEvent">
+			    Toggle render
+			  </button>
+			  <transition
+			    name="slide"
+			    enter-active-class="animated bounceOutLeft"
+			    leave-active-class="animated bounceOutRight"
+			  >
+			    <div v-if="isShow" class="content"></div>
+			  </transition>
+		</div>
+		
+		<script type="text/javascript">
+			let app = new Vue({
+				el:'#app',
+				data:{
+					isShow: true
+				},
+				methods:{
+					toggleEvent: function(){
+						this.isShow = !this.isShow
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id='app'>
+			<ul>
+				<school v-for="item,index in schoolList" :school-name="item" :key="index" :index="'abc'+index"></school>
+			</ul>
+
+			<h3>选中的学校是：{{chooseSchool}}</h3>
+		</div>
+
+		<script type="text/javascript">
+			//产品组件
+			Vue.component("school", {
+				// schoolName即为school-name
+				props: ['schoolName', 'index'],
+				
+				<!-- 
+				 //重点：<button @click="$parent.chooseSchool = schoolName">选择学校</button>
+				 //<button @click="$root.chooseSchool = schoolName">选择学校</button>
+				 -->
+				template: `<li>
+							<h3>{{index}}--学校名称：{{schoolName}}</h3>
+							<button @click="$root.chooseSchool = schoolName">选择学校</button>
+						</li>`
+			})
+
+			//根组件
+			let app = new Vue({
+				el: '#app',
+				data: {
+					schoolList: ['q清华', 'b北大', 'z浙大'],
+					chooseSchool: ''
+				}
+			})
+		</script>
+	</body>
+</html>
